@@ -6,8 +6,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author zlikun <zlikun-dev@hotmail.com>
@@ -28,10 +36,30 @@ public class RestTemplateTest {
     final String USER_SERVICE_ID = "user";
 
     @Test
-    public void test() {
-
-        UserInfo info = restTemplate.getForObject(String.format("http://%s/user/{1}", USER_SERVICE_ID), UserInfo.class, 10086);
+    public void getForObject() {
+        // 返回一个POJO
+        UserInfo info = restTemplate.getForObject(String.format("http://%s/user/{1}", USER_SERVICE_ID),
+                UserInfo.class, 10086);
         System.out.println(info);
+
+    }
+
+    @Test
+    public void getForEntity() {
+        // 返回一个ResponseEntity<>对象
+        ResponseEntity<UserInfo> entity = restTemplate.getForEntity(String.format("http://%s/user/{1}", USER_SERVICE_ID),
+                UserInfo.class, 10086);
+        // 获取响应状态码
+        assertTrue(entity.getStatusCode().is2xxSuccessful());
+        assertEquals(200, entity.getStatusCodeValue());
+        // 获取响应消息体
+        UserInfo info = entity.getBody();
+        System.out.println(info);
+        // 获取全部响应消息头
+        for (Map.Entry<String, List<String>> entry : entity.getHeaders().entrySet()) {
+            System.out.printf("%s:%s%n", entry.getKey(), entry.getValue());
+        }
+
 
     }
 
