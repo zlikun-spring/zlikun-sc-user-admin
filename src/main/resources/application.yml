@@ -1,0 +1,31 @@
+server:
+  port: 9010
+spring:
+  application:
+    name: admin
+  profiles:
+    active: default
+  cloud:
+    # 忽略部分网卡，限制只使用限定前缀IP等
+    # http://cloud.spring.io/spring-cloud-static/Finchley.RELEASE/multi/multi__spring_cloud_commons_common_abstractions.html#ignore-network-interfaces
+    inetutils:
+      ignored-interfaces:
+        - docker0
+        - veth.*
+      preferred-networks:
+        - 192.168
+        - 10.0
+      use-only-site-local-interfaces: true
+eureka:
+  client:
+    fetch-registry: true
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://root:123456@localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+logging:
+  level:
+    org.springframework.cloud: DEBUG
+    org.springframework.boot: INFO
