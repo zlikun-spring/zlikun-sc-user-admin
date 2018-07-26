@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
@@ -60,7 +59,27 @@ public class RestTemplateTest {
             System.out.printf("%s:%s%n", entry.getKey(), entry.getValue());
         }
 
+    }
 
+    @Test
+    public void post() {
+        UserInfo user = new UserInfo();
+        user.setName("Jane");
+        ResponseEntity<Long> entity = restTemplate.postForEntity(String.format("http://%s/user/", USER_SERVICE_ID),
+                user, Long.class);
+        assertEquals(Long.valueOf(10000L), entity.getBody());
+    }
+
+    @Test
+    public void put() {
+        UserInfo user = new UserInfo();
+        user.setName("Jane");
+        restTemplate.put(String.format("http://%s/user/{1}", USER_SERVICE_ID), user, 10000L);
+    }
+
+    @Test
+    public void delete() {
+        restTemplate.delete(String.format("http://%s/user/{1}", USER_SERVICE_ID), 10000L);
     }
 
 }
