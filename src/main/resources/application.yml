@@ -22,7 +22,7 @@ eureka:
     healthcheck:
       enabled: true
     service-url:
-      defaultZone: http://root:123456@localhost:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/
   instance:
     prefer-ip-address: true
 logging:
